@@ -10,9 +10,9 @@ class session_DatabaseStorage extends session_AbstractStorage {
 
 		$this->database = $options['database'];
 
-		ini_set('session.gc_divisor', 1);
+		ini_set('session.gc_divisor', 100);
 		ini_set('session.gc_maxlifetime', (isset($options['life']) ? $options['life'] : 7200));
-		ini_set('session.gc_probability', 100);
+		ini_set('session.gc_probability', 1);
 
 		parent::__construct($options);
 	}
