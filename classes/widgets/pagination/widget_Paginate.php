@@ -96,6 +96,12 @@ class widget_Paginate {
 
 		return 	$this->resultsPerPage;
 	}
+	
+	
+	public function getResultsPerPage() {
+		return 	$this->resultsPerPage;
+	}
+	
 
 	/* set the format template (default is classic) */
 	public function setFormatTemplate ($template = 1) {
