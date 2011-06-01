@@ -2,6 +2,7 @@
 
 class widget_DateElement extends widget_AbstractElement {
 	private $options = array();
+	protected $showDefaults = true;
 
 	public function __construct($args) {
 
@@ -10,6 +11,10 @@ class widget_DateElement extends widget_AbstractElement {
 
 		if(isset($args['yearRange'][1])) $this->yearRange[1] = $args['yearRange'][1];
 		else $this->yearRange[1] = idate("Y");
+
+		if(isset($args['showDefaults']) && !$args['showDefaults']) {
+			$this->showDefaults = false;
+		}
 	}
 
 	function renderElement() {
@@ -18,8 +23,15 @@ class widget_DateElement extends widget_AbstractElement {
 		$monthValue = isset($date['month']) ? $date['month'] : date("m");
 		$yearValue = isset($date['year']) ? $date['year'] : date("Y");
 
-
-		$dayOptions = sfl("<option value='' >Day</option>");
+		if($this->showDefaults) {
+			$dayOptions = sfl("<option value='' >Day</option>");
+			$monthOptions = sfl("<option value='' >Month</option>");
+			$yearOptions = sfl("<option value='' >Year</option>");
+		} else {
+			$dayOptions = '';
+			$monthOptions = '';
+			$yearOptions = '';
+		}
 		for($i = 1; $i <= 31; $i++) {
 			// TODO: Bug here days don't always return the correct number of days...
 
@@ -32,7 +44,6 @@ class widget_DateElement extends widget_AbstractElement {
 				$dayOptions .= sfl("<option value='%s'>%s</option>", $dayValueLeading, $dayNumber);
 
 		}
-		$monthOptions = sfl("<option value='' >Month</option>");
 		for($i = 1; $i <= 12; $i++) {
 			if(strval($monthValue) == strval($i))
 				$monthOptions .= sfl("<option value='%s' selected='selected'>%s</option>", date("m", mktime(0, 0, 0, $i, 1, date("Y"))), date("F", mktime(0, 0, 0, $i, 1, date("Y"))));
@@ -41,7 +52,6 @@ class widget_DateElement extends widget_AbstractElement {
 
 		}
 
-		$yearOptions = sfl("<option value='' >Year</option>");
 		for($i = $this->yearRange[1]; $i >=  $this->yearRange[0]; $i--) {
 			if(strval($yearValue) == strval($i))
 				$yearOptions .= sfl("<option value='%s' selected='selected'>%s</option>", $i, $i);
