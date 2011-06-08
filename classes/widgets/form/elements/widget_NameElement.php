@@ -27,7 +27,7 @@ class widget_NameElement extends widget_AbstractElement {
 			if(!array_key_exists('firstName',$name)) $name['firstName'] = null;
 			if(!array_key_exists('lastName',$name)) $name['lastName'] = null;
 
-			$titleOptions = sfl("<option value='' >Title</option>");
+			$titleOptions = sfl("<option value='' class='blank'>Title</option>");
 			foreach($this->titles as $title => $data) {
 				if($name['title'] == $title)
 					$titleOptions .= sfl("<option value='%s' selected='selected'>%s</option>",
@@ -46,12 +46,12 @@ class widget_NameElement extends widget_AbstractElement {
 							$this->getName(), $this->getName(), $titleOptions
 						);
 
-			$out .=	sfl("<input type='text' name='%s[firstName]' value='%s' id='form_%s' class='inputName inputNameFirst' class='text' />",
-							$this->getName(), parent::makeInputSafe($name['firstName']), $this->getName()
+			$out .=	sfl("<input type='text' name='%s[firstName]' value='%s' placeholder='%s' id='form_%s' class='inputName inputNameFirst' class='text' />",
+							$this->getName(), parent::makeInputSafe($name['firstName']), $this->firstNameDefault, $this->getName()
 						);
 
-			$out .=	sfl("<input type='text' name='%s[lastName]' value='%s' id='form_%s' class='inputName inputNameLast' class='text' />",
-							$this->getName(), parent::makeInputSafe($name['lastName']), $this->getName()
+			$out .=	sfl("<input type='text' name='%s[lastName]' value='%s' placeholder='%s' id='form_%s' class='inputName inputNameLast' class='text' />",
+							$this->getName(), parent::makeInputSafe($name['lastName']), $this->lastNameDefault, $this->getName()
 						);
 
 			return $out;
