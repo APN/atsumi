@@ -6,9 +6,12 @@ class widget_TimeElement extends widget_AbstractElement {
 	protected $miniteInterval;
 	protected $hourInterval;
 
+	protected $showDefaults = true;
+
 	public function __construct($args) {
 		$this->miniteInterval =(isset($args['minuteInterval']) ? $args['minuteInterval'] : 1);
 		$this->hourInterval =(isset($args['hourInterval']) ? $args['hourInterval'] : 1);
+		$this->showDefaults = (isset($args['showDefaults']) && !$args['showDefaults']) ? false : true;
 	}
 
 	function renderElement() {
@@ -18,8 +21,13 @@ class widget_TimeElement extends widget_AbstractElement {
 
 
 	//	if($elementValue == "" || is_null($elementValue))
-
-		$hourOptions = sfl('<option value="">Hour</option>');
+		if($this->showDefaults) {
+			$hourOptions = sfl('<option value="">Hour</option>');
+			$minOptions = sfl("<option value=''>Minutes</option>");
+		} else {
+			$hourOptions = '';
+			$minOptions = '';
+		}
 		for($i = 0; $i <= 23; $i += $this->hourInterval) {
 			$text =($i <= 9 ? "0$i" : $i);
 
@@ -30,7 +38,6 @@ class widget_TimeElement extends widget_AbstractElement {
 			);
 		}
 
-		$minOptions = sfl("<option value=''>Minutes</option>");
 		for($i = 0; $i <= 59; $i += $this->miniteInterval) {
 			$text =($i <= 9 ? "0$i" : $i);
 
@@ -49,7 +56,7 @@ class widget_TimeElement extends widget_AbstractElement {
 		);
 
 		$out .=	sfl(
-			": <select name='%s[min]' id='form_%s' style='inputTime inputTimeMinute' >%s</select>",
+			"<span>:</span> <select name='%s[min]' id='form_%s' style='inputTime inputTimeMinute' >%s</select>",
 			$this->getName(),
 			$this->getName(),
 			$minOptions

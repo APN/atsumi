@@ -14,7 +14,7 @@ class widget_SelectElement extends widget_AbstractElement {
 		$elementValue = $this->getValue();
 
 		if(!$this->defaultValue && $this->blankMessage)
-			$opionHtml .= sfl("<option value='' >%s</option>", $this->blankMessage);
+			$opionHtml .= sfl("<option value='' class='blank'>%s</option>", $this->blankMessage);
 		elseif($this->defaultValue) {
 			// TODO: put this in a func...
 			foreach($this->defaultValue as $value => $option) {

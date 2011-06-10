@@ -194,6 +194,10 @@ class widget_Form {
 		return $this->elementMap[$elementName]->render();
 	}
 
+	public function getElementMap() {
+		return $this->elementMap;
+	}
+
 	public function getFormTop() {
 
 		$html = sf('<a name="form_%s"></a><form name="%s" id="%s" method="%s" action="%s" enctype="%s" class="form">',
