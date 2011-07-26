@@ -3,11 +3,14 @@
 class widget_SelectElement extends widget_AbstractElement {
 	private $options = array();
 	private $blankMessage = "Please Select";
+	private $multiple = false;
 
 	public function __construct($args) {
 		$this->options = $args['options'];
 		if(array_key_exists('blank', $args))
 			$this->blankMessage = $args['blank'];
+		if(array_key_exists('multiple', $args)) 
+			$this->multiple = $args['multiple'];
 	}
 	function renderElement() {
 		$opionHtml = "";
@@ -44,9 +47,10 @@ class widget_SelectElement extends widget_AbstractElement {
 				);
 		}
 
-		return(	sfl("<select name='%s' id='form_%s'  class='inputSelect'>%s</select>",
+		return(	sfl("<select name='%s' id='form_%s'  class='inputSelect' %s>%s</select>",
 						$this->getName(),
 						$this->getName(),
+						(($this->multiple) ? 'MULTIPLE' : ''),
 						$opionHtml
 
 					)

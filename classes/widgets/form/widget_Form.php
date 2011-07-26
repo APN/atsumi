@@ -118,7 +118,6 @@ class widget_Form {
 	public function value($elementName) {
 		if(!array_key_exists($elementName, $this->elementMap))
 			throw new Exception("Element not found: ".$elementName);
-
 		return $this->elementMap[$elementName]->getValue();
 	}
 
@@ -194,6 +193,24 @@ class widget_Form {
 		return $this->elementMap[$elementName]->render();
 	}
 
+	/**
+	 * Useful for checking how many dynamic multi type inputs have been used
+	 *
+	 * @return bool
+	 */
+	public function hasSubmittedValue($elementName, $index = null) {
+		if(isset($this->userInput[$elementName]) || isset($this->userFiles[$elementName])) {
+			if($index && (isset($this->userInput[$index]) || (isset($this->userFiles[$elementName]['name'][$index])&& $this->userFiles[$elementName]['error'][$index] == UPLOAD_ERR_OK))) {
+				return true;
+			} else if(!$index) {
+				return true;
+			}
+			return false;
+		} else {
+			return false;
+		}
+	}
+
 	public function getFormTop() {
 
 		$html = sf('<a name="form_%s"></a><form name="%s" id="%s" method="%s" action="%s" enctype="%s" class="form">',
@@ -214,14 +231,20 @@ class widget_Form {
 		return $html;
 	}
 
-	public function getFormBottom() {
+	public function getFormBottom($includeSubmit = true) {
+		$html = sfl('</form>');
+		if($includeSubmit) {
+			$html = $this->getFormSubmit() . $html;
+		}
+		return $html;
+	}
 
+	// Seperate out for ease of customisation
+	public function getFormSubmit() {
 		// add the submit to the bottom of the form for now(will convert to element in next version)
 		$html  = sfl('	<div class="submit">');
 		$html .= sfl('		<input type="submit" class="form_submit_button" id="submit_%s" value="%s" />', $this->name, $this->getSubmit());
 		$html .= sfl('	</div>');
-		$html .= sfl('</form>');
-
 		return $html;
 	}
 }

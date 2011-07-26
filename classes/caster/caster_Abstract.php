@@ -141,6 +141,9 @@ abstract class caster_Abstract  {
 				case 'r':
 					$ret .= "\r";
 					break;
+				case '[': 
+					$ret .= '\[';
+					break;
 				default:
 					throw new caster_Exception('Illegal escape character: ' . $match {1});
 				}
