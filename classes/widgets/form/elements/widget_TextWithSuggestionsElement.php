@@ -11,7 +11,7 @@ class widget_TextWithSuggestionsElement extends widget_AbstractElement {
 		$this->afterText 	= $args['afterText'];
 	}
 
-	public function setValue($input) {
+	public function setValue($input, $files = array()) {
 		if($input[$this->name] == 'custom' && array_key_exists(sf('%s_custom',$this->name), $input)) $this->value = $input[sf('%s_custom',$this->name)];
 		else $this->value =  $input[$this->name];
 	}

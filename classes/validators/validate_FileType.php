@@ -24,6 +24,7 @@
   								'html'	=> array('text/html','text/plain'),
   								'php'	=> array('application/x-httpd-php', 'text/php', 'application/php', 'magnus-internal/shellcgi', 'application/x-php'),
   								'sql'	=> array('text/plain', 'application/txt', 'browser/internal', 'text/anytext', 'widetext/plain', 'widetext/paragraph'),
+								'csv'	=> array('text/comma-separated-values', 'text/csv', 'application/csv', 'text/plain'),
 
 
   								// application specific
