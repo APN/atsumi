@@ -182,7 +182,7 @@ class atsumi_ErrorHandler extends atsumi_Observable {
 	 * @access public
 	 * @param Exception $e The exception that was thrown
 	 */
-	public function handleException(Exception $e) {
+	public function handleException(Exception $e, $recover = true) {
 		
 		try {
 			// fires the exception_fc event if not blocked by flood control
@@ -190,9 +190,18 @@ class atsumi_ErrorHandler extends atsumi_Observable {
 				$this->fireEvent(self::EVENT_EXCEPTION_FC, new atsumi_ErrorEventArgs($e, $this->recoverer));
 
 			// fire the exception event regardless of flood control
+<<<<<<< HEAD
 			$this->fireEvent(self::EVENT_EXCEPTION, new atsumi_ErrorEventArgs($e, $this->recoverer));
 
 			$this->recoverer->recover($e);
+=======
+			$this->fireEvent(self::EVENT_EXCEPTION, new atsumi_ErrorEventArgs($e, &$this->recoverer));
+			
+			if ($recover)
+				$this->recoverer->recover($e);
+			else
+				return;
+>>>>>>> 541247f... added Atsumi::error__listen(Exception ) method. This tells the error handler to listen to the exception but don't recover from it. Useful for debugging
 		} catch(Exception $e) {
 			exit(__CLASS__.' Error: '.$e->getMessage()."\n".$e->getFile().' #'.$e->getLine(). PHP_EOL.$e->getTraceAsString());
 		}
@@ -223,6 +232,9 @@ class atsumi_ErrorHandler extends atsumi_Observable {
 		// record exception as listened to
 		if ($eventType == self::EVENT_EXCEPTION_FC)
 			$this->recordInFloodControl(get_class($args->exception), $args->exception->getLine(), $args->exception->getFile());
+	}
+	public function listen ($e) {
+		$this->handleException($e, false);
 	}
 }
 ?>
