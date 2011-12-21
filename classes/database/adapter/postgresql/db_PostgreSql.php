@@ -42,11 +42,16 @@ class db_PostgreSql extends db_AbstractDatabase {
 		$this->connectReal($conString, $config);
 	}
 
+	protected function createRow ($rowData) {
+		return new db_PostgreSQLRow($rowData);
+	}
+
+
 	/**
 	 * Initalise the vender type caster
 	 */
 	protected function initCaster() {
-		$this->parser = new caster_PostgreSQL();
+		$this->caster = new caster_PostgreSql();
 	}
 
 	/**
@@ -61,7 +66,7 @@ class db_PostgreSql extends db_AbstractDatabase {
 	 * Returns true if the database is in transaction
 	 * @return boolean If the database is in transaction
 	 */
-	public function transaction() {
+	public function inTransaction() {
 		return $this->transaction;
 	}
 
@@ -108,7 +113,13 @@ class db_PostgreSql extends db_AbstractDatabase {
 	 */
 	public function transactionAutoRollback() {
 		if($this->transaction)
-			$this->rollbackTransaction();
+			$this->transactionRollback();
 	}
+	
+	public function nextval ($name) {
+		$row = $this->selectOne ("SELECT nextval (%s) AS id", $name);
+		return $row->cast('i', 'id'); 
+	}
+	
 }
 ?>

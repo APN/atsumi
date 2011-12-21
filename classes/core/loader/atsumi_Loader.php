@@ -138,9 +138,9 @@ class atsumi_Loader {
 	 * Used to load or include a set of files as specified in the spec
 	 *
 	 * Examples:
-	 * references('atsumi', 'helpers mvc database');
-	 * references('atsumi', array('helpers', 'mvc', 'database'));
-	 * references(array('atsumi' => 'helpers mvc database'));
+	 * references('atsumi', 'utility mvc database');
+	 * references('atsumi', array('utility', 'mvc', 'database'));
+	 * references(array('atsumi' => 'utility mvc database'));
 	 * @access public
 	 * @param $spec mixed See above for examples
 	 */
@@ -264,9 +264,12 @@ class atsumi_Loader {
 	 */
 	public function _loadClass($classname) {
 		$classname = strtolower($classname);
-		if(!array_key_exists($classname, $this->classes)) 
-			throw new loader_ClassNotFoundException('Atsumi failed to find the class required \''.$classname.'\'', $classname);
 		
+		if(!array_key_exists($classname, $this->classes)) 
+			return;
+			
+		//throw new loader_ClassNotFoundException('Atsumi failed to find the class required \''.$classname.'\'', $classname);
+
 		require_once($this->classes[$classname]);
 	}
 
@@ -299,10 +302,8 @@ class atsumi_Loader {
 }
 
 /**
- * Used internally by PHP to help attempt to load missing classes
- * @param $className The class to load
+ * register the autoloader
  */
-function __autoload($classname) {
-	atsumi_Loader::loadClass($classname);
-}
+spl_autoload_register(array('atsumi_Loader', 'loadClass'));
+
 ?>
