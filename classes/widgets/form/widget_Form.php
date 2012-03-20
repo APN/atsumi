@@ -26,9 +26,10 @@ class widget_Form {
 	public function __get($name) {
 		$matches = null;
 		if(preg_match('/^value_(.+)$/', $name, $matches)) {
-			return call_user_func(array($this, 'value'), $matches [1]);
-		}
-		throw new Exception('Undefined method:' . $name);
+			return call_user_func(array($this, 'value'), $matches [1]);			
+		} elseif (preg_match('/^element_(.+)$/', $name, $matches)) {
+			return call_user_func(array($this, 'element'), $matches [1]);
+		} else throw new Exception('Undefined method:' . $name);
 	}
 
 	public function setName($in) {
@@ -96,7 +97,19 @@ class widget_Form {
 		// css style
 		if(array_key_exists('style',$args))
 			$element->setStyle($args['style']);
-
+			
+		// css style
+		if(array_key_exists('cssStyle',$args))
+			$element->setCssStyle($args['cssStyle']);
+		
+		// tabindexes
+		if(array_key_exists('tabindex',$args))
+			$element->setTabindex($args['tabindex']);
+			
+		// css style
+		if(array_key_exists('cssClass',$args))
+			$element->setCssClass($args['cssClass']);
+			
 		if(array_key_exists('force_default', $args))
 			$element->setForceDefault($args['force_default']);
 
@@ -115,10 +128,38 @@ class widget_Form {
 		$this->elementMap[$element->getName()] = &$element;
 	}
 
+	public function remove($elementName) {
+		if(!isset($this->elementMap[$elementName])) {
+			throw new Exception('Cannot remove non-existant element');
+		}
+		for($i = 0; $i < count($this->elements); $i++) {
+			$done = false;
+			if($this->elementMap[$elementName] == $this->elements[$i]) {
+				unset($this->elementMap[$elementName]);
+				unset($this->elements[$i]);
+				$done = true;
+			}
+			if($done) {
+				$this->elements = array_values($this->elements);
+				break;
+			}
+		}
+	}
+
 	public function value($elementName) {
 		if(!array_key_exists($elementName, $this->elementMap))
 			throw new Exception("Element not found: ".$elementName);
+
 		return $this->elementMap[$elementName]->getValue();
+	}
+
+	/* Returns an element */
+	public function element ($elementName) {
+		
+		if(!array_key_exists($elementName, $this->elementMap))
+			throw new Exception("Element not found: ".$elementName);
+
+		return $this->elementMap[$elementName];
 	}
 
 	public function getSubmitted() {
@@ -193,24 +234,6 @@ class widget_Form {
 		return $this->elementMap[$elementName]->render();
 	}
 
-	/**
-	 * Useful for checking how many dynamic multi type inputs have been used
-	 *
-	 * @return bool
-	 */
-	public function hasSubmittedValue($elementName, $index = null) {
-		if(isset($this->userInput[$elementName]) || isset($this->userFiles[$elementName])) {
-			if($index && (isset($this->userInput[$index]) || (isset($this->userFiles[$elementName]['name'][$index])&& $this->userFiles[$elementName]['error'][$index] == UPLOAD_ERR_OK))) {
-				return true;
-			} else if(!$index) {
-				return true;
-			}
-			return false;
-		} else {
-			return false;
-		}
-	}
-
 	public function getFormTop() {
 
 		$html = sf('<a name="form_%s"></a><form name="%s" id="%s" method="%s" action="%s" enctype="%s" class="form">',
@@ -231,20 +254,14 @@ class widget_Form {
 		return $html;
 	}
 
-	public function getFormBottom($includeSubmit = true) {
-		$html = sfl('</form>');
-		if($includeSubmit) {
-			$html = $this->getFormSubmit() . $html;
-		}
-		return $html;
-	}
+	public function getFormBottom() {
 
-	// Seperate out for ease of customisation
-	public function getFormSubmit() {
 		// add the submit to the bottom of the form for now(will convert to element in next version)
 		$html  = sfl('	<div class="submit">');
 		$html .= sfl('		<input type="submit" class="form_submit_button" id="submit_%s" value="%s" />', $this->name, $this->getSubmit());
 		$html .= sfl('	</div>');
+		$html .= sfl('</form>');
+
 		return $html;
 	}
 }

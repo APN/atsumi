@@ -84,11 +84,9 @@ class session_DatabaseStorage extends session_AbstractStorage {
 			return true;
 
 		/* this is a little drastic but will most likley segfault if Exception bubbles up */
-<<<<<<< HEAD
-		} catch (Exception $e) { die('Could not write session to database.'); }
-=======
+
 		} catch (Exception $e) { die('Could not write session to database - '.$e->getMessage()); }
->>>>>>> 41d9c7f65065f5b8af7c7627555d6643016c7210
+
 	}
 
 	public function destroy($id) {
