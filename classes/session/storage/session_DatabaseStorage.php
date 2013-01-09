@@ -19,7 +19,7 @@ class session_DatabaseStorage extends session_AbstractStorage {
 
 	public function read($id) {
 		try {
-			$result = $this->database->select_1('SELECT * FROM session WHERE checksum = %i AND session_id = %s', crc32($id), $id);
+			$result = $this->database->select_1('SELECT * FROM session WHERE checksum = %l::bigint AND session_id = %s', crc32($id), $id);
 
 		}
 		catch(Exception $e) {
@@ -49,7 +49,7 @@ class session_DatabaseStorage extends session_AbstractStorage {
 
 	public function write($id, $sessionData) {
 		try {
-			if($this->database->exists('session', 'checksum = %i AND session_id = %s', crc32($id), $id)) {
+			if($this->database->exists('session', 'checksum = %l::bigint AND session_id = %s', crc32($id), $id)) {
 				atsumi_Debug::record(
 					'Updating Session',
 					sf('The session(%s) is being updated to the DB', $id ),
@@ -60,7 +60,7 @@ class session_DatabaseStorage extends session_AbstractStorage {
 
 				$this->database->update(
 					'session',
-					'checksum = %i AND session_id = %s', crc32($id), $id,
+					'checksum = %l::bigint AND session_id = %s', crc32($id), $id,
 					'data = %s', base64_encode($sessionData),
 					'last_active	= NOW()'
 				);
@@ -75,7 +75,7 @@ class session_DatabaseStorage extends session_AbstractStorage {
 				);
 				$this->database->insert(
 					'session',
-					'checksum		= %i', crc32($id),
+					'checksum		= %l::bigint', crc32($id),
 					'session_id		= %s', $id,
 					'data			= %s', base64_encode($sessionData),
 					'last_active	= NOW()'
@@ -85,14 +85,14 @@ class session_DatabaseStorage extends session_AbstractStorage {
 
 		/* this is a little drastic but will most likley segfault if Exception bubbles up */
 
-		} catch (Exception $e) { die('Could not write session to database - '.$e->getMessage()); }
+		} catch (Exception $e) { Atsumi::error__listen($e); die('Could not write session to database - '.$e->getMessage()); }
 
 	}
 
 	public function destroy($id) {
 		$this->database->delete(
 			'session',
-			'checksum = %i AND session_id = %s', crc32($id), $id
+			'checksum = %l::bigint AND session_id = %s', crc32($id), $id
 		);
 
 		return true;

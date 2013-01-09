@@ -60,6 +60,19 @@ class atsumi_Http {
 
 	//.. add the rest...
 	
+	static function httpsPost($url, $fieldsString, $curlVerifyHost = 2, $curlVerifyPeer = true) {
+		$ch=curl_init();
+		curl_setopt($ch, CURLOPT_URL, $url);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($ch, CURLOPT_POST, 1) ;
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $fieldsString);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, $curlVerifyPeer);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, $curlVerifyHost);
+		$result = curl_exec($ch);
+		curl_close($ch);
+		return $result;
+	}
+
 }
 
 
