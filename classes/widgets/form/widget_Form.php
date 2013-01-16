@@ -230,6 +230,10 @@ class widget_Form {
 		return $html;
 	}
 
+	public function hasElement($elementName) {
+		return array_key_exists($elementName, $this->elementMap);
+	}
+	
 	public function getElement($elementName) {
 		return $this->elementMap[$elementName]->render();
 	}
